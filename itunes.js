@@ -1,5 +1,3 @@
-/* global $ */
-/* global document */
 module.exports = function() {
 
     /**
@@ -84,8 +82,11 @@ module.exports = function() {
      *  }
      * Status are: 'watched', 'following', 'pending' or 'no_status'
      */
-    var checkSelectors = {
-        false: false
+
+    var checkSelectors = function() {
+        return {
+            '.lockup.product.movie.video .action.view-in-itunes': 'watched',
+        };
     };
 
     return {
