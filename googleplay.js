@@ -1,5 +1,3 @@
-/* global $ */
-/* global document */
 module.exports = function() {
 
     var getMediaType = function() {
@@ -68,8 +66,13 @@ module.exports = function() {
         return media;
     };
 
-    var checkSelectors = {
-
+    var checkSelectors = function() {
+        return {
+            '.purchase-button-container': 'watched',
+            '.wishlist-content.wishlist-yet-to-add': 'pending',
+            '.wishlist-content.wishlist-remove': 'no_status',
+            '.review-actions.id-track-click': 'watched',
+        };
     };
 
     return {

@@ -1,7 +1,4 @@
-/* global $ */
-/* global document */
 module.exports = function() {
-
     var getMediaType = function() {
 
         //Used to pass tests
@@ -86,17 +83,45 @@ module.exports = function() {
                 }
                 
             } else if (mediaType === 'EPISODE') {
+                var title = $('#episodeImageInfo .title').text();
 
+                // Season
+                media.season = parseInt($('#episodeImageInfo .season').text().match(/\d+/)[0]);
+
+                // Get last part (episode N)
+                var splitted = title.split('(');
+
+                //Title
+                media.title = splitted[0].trim();
+
+                //Episode
+                media.episode = parseInt(splitted[splitted.length-1].match(/\d+/)[0]);
             }
         }
 
         return media;
     };
 
-    var checkSelectors = {
-        '.add_like': 'pending', //WTF?
-        '.add_fav': 'watched',
-        '#pay': 'watched',
+    var checkSelectors = function() {
+        return {
+            //Movie
+            '.add_like:not(".option-added")': 'pending', //WTF?
+            '.add_like.option-added': 'no_status',
+            '.add_fav:not(".option-added")': 'watched',
+            '.add_fav.option-added': 'no_status',
+            '#pay': 'watched',
+            
+            // Episode
+            '.payMethod': 'watched',
+            '#episodePromoCode': 'watched',
+
+            //Serie
+            '#addToFavourites': 'following',
+            // Its a pending for episodes (not supported)
+            //'#addToWannaSeeIt': 'pending',
+
+            //'#episodePromoCode a, .payMethod.payCard': 'watched'
+        };
     };
 
     return {

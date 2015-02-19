@@ -1,5 +1,3 @@
-/* global $ */
-/* global document */
 module.exports = function() {
 
     /**
@@ -12,6 +10,9 @@ module.exports = function() {
         if (typeof(document) !== 'undefined') {
             if (document.location.href.match(/\/movie\//)) {
                 return 'MOVIE';
+            }
+            if (document.location.href.match(document.location.href.match(/\/episode\//))) {
+                return 'EPISODE';
             }
             if (document.location.href.match(/\/tv\//)) {
                 return 'SERIE';
@@ -52,9 +53,6 @@ module.exports = function() {
 
         if (typeof($) !== 'undefined') {
 
-            // TITLE
-            media.title = $('h2#title span[itemprop=name]').text();
-
             // YEAR
             media.year = $('#year').text().replace(/\(|\)/g, '');
 
@@ -62,6 +60,26 @@ module.exports = function() {
             $('span[itemprop=director]').each(function(k,v){
                 media.directors.push($(v).find('span[itemprop=name]').text());
             });
+
+            if (mediaType == 'EPISODE') {
+                media.season = parseInt($('h2#title span[itemprop="seasonNumber"]').text());
+
+                var episode = $('h2#title a').last().attr('href').split('/');
+                media.episode = parseInt(episode[episode.length-1]);
+                media.title = $('h3.show_title span[itemprop=name]').text().trim();
+            } else {
+                var $title = $('h2#title span[itemprop=name]');
+                // TITLE
+                media.title = $title.text();
+
+                // Its a season
+                if (document.location.href.match(/\/tv\/.*\/season\//)) {
+                    var title = $title.html();
+                    var splitted = title.split(':');
+
+                    media.title = splitted[0];
+                }
+            }
         }
 
         return media;
@@ -76,8 +94,15 @@ module.exports = function() {
      *  }
      * Status are: 'watched', 'following', 'pending' or 'no_status'
      */
-    var checkSelectors = {
-        false: false
+    var checkSelectors = function() {
+        return {
+            //Movies and Series
+            '#watchlist': 'pending',
+            '#favourite': 'watched',
+
+            //Episode
+            '#rating_stars': 'watched',
+        };
     };
 
     return {
