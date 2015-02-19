@@ -55,19 +55,21 @@ module.exports = function() {
             // Optional, used in strange circumstances when we need to iterate and get a specific property to match
             episodeParser: function(media, season, episode) {
             
-                // Example of trying to match by title (in this example we dont have season and episode)
+                // Example of trying to match by title
                 
-                var i, j;
-
-                // Episode title 
-                var title = $('h1').text().toLowerCase();
-
-                for (i in media.seasons) {
-                    for (j in media.seasons[i]) {
-                        var episodeTitle = media.seasons[i][j].name.toLowerCase();
-
-                        if (media.seasons[i][j].season === parseInt(season) && (episodeTitle === title)) {
-                            return media.seasons[i][j];
+                if (!isNaN(season)) {
+                    var i, j;
+                
+                    // Episode title 
+                    var title = $('h1').text().toLowerCase();
+    
+                    for (i in media.seasons) {
+                        for (j in media.seasons[i]) {
+                            var episodeTitle = media.seasons[i][j].name.toLowerCase();
+    
+                            if (media.seasons[i][j].season === parseInt(season) && (episodeTitle === title)) {
+                                return media.seasons[i][j];
+                            }
                         }
                     }
                 }
