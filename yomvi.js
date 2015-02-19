@@ -1,4 +1,3 @@
-/* global $ */
 module.exports = function() {
 
     var getMediaType = function() {
@@ -88,8 +87,10 @@ module.exports = function() {
         return media;
     };
 
-    var checkSelectors = {
-        false: false
+    var checkSelectors = function() {
+        return {
+            '#play_pase_btn': 'watched'
+        };
     };
 
     return {
