@@ -1,5 +1,3 @@
-/* global $ */
-/* global document */
 module.exports = function() {
 
     var getMediaType = function() {
@@ -49,8 +47,16 @@ module.exports = function() {
         return media;
     };
 
-    var checkSelectors = {
-        false: false
+    var checkSelectors = function() {
+        return {
+            '#capaCalidad .btn_hd': 'watched',
+            '#anadirFavorito': 'watched',
+
+            '.puntuacion .fn_stars': 'watched',
+
+            // SERIE (Comprar temporada)
+            '#divPrecioTemp': 'following'
+        };
     };
 
     return {
