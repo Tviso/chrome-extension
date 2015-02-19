@@ -1,5 +1,4 @@
 module.exports = {
-	
 	'googleplay' : require('./googleplay'),
 	'wuaki' : require('./wuaki'),
 	'filmaffinity' : require('./filmaffinity'),
@@ -10,4 +9,6 @@ module.exports = {
 	'itunes' : require('./itunes'),
 	'tmdb' : require('./tmdb'),
 	'filmin' : require('./filmin'),
+	'seriesflv' : require('./seriesflv'),
+	'pordede' : require('./pordede'),
 };
