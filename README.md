@@ -13,8 +13,6 @@ To add a new website into the extension, you have to create a new JavaScript fil
 
 
 <pre><code>
-/* global $ */
-/* global document */
 module.exports = function() {
 
     /**
@@ -53,6 +51,32 @@ module.exports = function() {
             directors: [],
             episode: null,
             season: null,
+            
+            // Optional, used in strange circumstances when we need to iterate and get a specific property to match
+            episodeParser: function(media, season, episode) {
+            
+                // Example of trying to match by title
+                
+                if (!isNaN(season)) {
+                    var i, j;
+                
+                    // Episode title 
+                    var title = $('h1').text().toLowerCase();
+    
+                    for (i in media.seasons) {
+                        for (j in media.seasons[i]) {
+                            var episodeTitle = media.seasons[i][j].name.toLowerCase();
+    
+                            if (media.seasons[i][j].season === parseInt(season) && (episodeTitle === title)) {
+                                return media.seasons[i][j];
+                            }
+                        }
+                    }
+                }
+                
+
+                return false;
+            }
         };
 
         return media;
@@ -67,9 +91,90 @@ module.exports = function() {
      *  }
      * Status are: 'watched', 'following', 'pending' or 'no_status'
      */
-    var checkSelectors = {
+    var checkSelectors = function() {
         return {
-
+            // Examples
+            
+            '#watch-it': 'watched',
+            
+            '.episodeContainer #watch-later': 'pending',
+            
+            
+            /* Advanced */
+            
+            '.episode.link': {
+                // Default value
+                value: 'watched',
+                
+                // Custom event (will override default one: mousedown)
+                on: 'change',
+                
+                /**
+                 * Do some previous manipulation to get the right data (automatically called)
+                 *
+                 * You can set the params like this:
+                 *
+                 * data.sendStatus = {
+                 *     idm: 00000000, // Set the idm found 
+                 *     mediaType: {1-5}, // Set the mediaType
+                 *     value: value // Set one of the available statuses
+                 * };
+                 *
+                 * In case you dont know an episode idm (the page shows all in the same view)
+                 *
+                 * data.findEpisode = {
+                 *    parse: 'The Walking Dead 3x2' // It will assume season 3, episode 2
+                 * };
+                 *
+                 * You can be explicit
+                 *
+                 * data.findEpisode = {
+                 *    season: 3,
+                 *    episode: 2
+                 * };
+                 *
+                 * @param data
+                 * @param $selector
+                 * @returns data
+                 */
+                manipulateData: function (data, $selector) {
+                    
+                    // If not a serie -> will take default value ('watched')
+                    if (data.media.mediaType != 1) {
+                        return false;
+                    }
+    
+                    var title = $selector.find('h2').text();
+    
+                    data.findEpisode = {
+                        parse: title
+                    };
+    
+                    return data;
+                }
+            }
+            
+            '.movie #watch': {
+                /**
+                 * Allows an entire override for this selector, any other parameter will be ignored
+                 * 
+                 * @param data
+                 * @param setMediaStatus
+                 */
+                listener: function(selector, data, setMediaStatus) {
+                    
+                    $(document).on('click', selector, function() {
+                        /* ...
+                        * Some logic
+                        * ...
+                        */
+                        
+                        // Set Status
+                        setMediaStatus(idm, mediaType, value) 
+                    }; 
+                    
+                }
+            }
         }
     };
 
