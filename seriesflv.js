@@ -84,7 +84,6 @@ module.exports = function() {
             'span.visto': {
                 manipulateData: function (data, $selector) {
                     // This site doesnt work well (eye buttons are not shown) so it doesnt work well
-                    console.log('attr ' + $selector.parent('a').attr('title'));
                     data.sendStatus.value = ($selector.parent('a').attr('title') == 'Marcar Visto') ? 'watched' : 'no_status';
 
                     var title = $selector.closest('tr').children('.sape').text();
