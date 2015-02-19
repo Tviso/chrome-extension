@@ -3,16 +3,13 @@ module.exports = function() {
     var getMediaType = function() {
 
         if (typeof(document) !== 'undefined') {
-
-            if (document.location.href.match(/\/television\/.*temporada-.*\/capitulo-/) || document.location.href.match(/\/programas\/.*\/temporada-\d+\/.+/)) {
-                return 'EPISODE';
-            } else {
-                if (document.location.href.match(/\/series\//) || document.location.href.match(/\/programas\//)) {
+            if (document.location.href.match(/\/film/)) {
+                if ($('span[itemprop="name"]').text().indexOf('(Serie de TV)') !== -1) {
                     return 'SERIE';
                 }
+                return 'MOVIE';
             }
         }
-        
         return false;
     };
 
@@ -25,144 +22,67 @@ module.exports = function() {
             year: null,
             cast: [],
             directors: [],
-            season: null,
             episode: null,
-            // Allows a custom parser
-            episodeParser: function(media, season) {
+            season: null,
+        };
 
-                if (!isNaN(season)) {
-                    var i, j;
+        //Used to pass tests
+        if (typeof($) !== 'undefined' && mediaType === 'MOVIE' || mediaType === 'SERIE') {
 
-                    var title = $('h3.mar-r_5').text().toLowerCase();
+            //Title
+            media.title = $('#main-title').text();
 
-                    for (i in media.seasons) {
-                        for (j in media.seasons[i]) {
-                            var episodeTitle = media.seasons[i][j].name.toLowerCase();
-                            var pieces, piece;
-
-                            // Example: El hormiguero | atresplayer: Jordi Évole | tviso: 5 de febrero de 2015 (Jordi Évole)
-                            pieces = episodeTitle.match(/.+\((.+)\)/);
-
-                            if (pieces != null && pieces[1] != null) {
-                                piece = pieces[1];
-                            }
-
-                            if (media.seasons[i][j].season === parseInt(season) && (episodeTitle === title || piece === title)) {
-                                return media.seasons[i][j];
-                            }
-                        }
-                    }
+            //Year
+            $('.movie-info dt').each(function(k, v) {
+                if ($(v).text() === 'Año') {
+                    media.year = parseInt($(v).next().text());
                 }
+            });
 
-                return false;
-            }
-        },
-        aux = null,
-        i = 0;
-
-        if (typeof($) !== 'undefined') {
-
-            //IF IS EPISODE
-            if (mediaType === 'EPISODE') {
-
-                media.title = $('.mar-r_5:first a').text();
-
-                aux = $('.mar-r_5:nth-child(3) a').text().match(/T(\d+)/);
-                media.season = aux[1];
-
-                var title = $('h3.mar-r_5').text();
-
-                // Example: Velvet | Capitulo 1
-                var parsedEpisodeTitle = title.match(/Capítulo (\d+)/);
-
-                if (parsedEpisodeTitle != null) {
-                    media.episode = parseInt(parsedEpisodeTitle[1]);
+            //Cast
+            $('.movie-info dt').each(function(k, v) {
+                if ($(v).text() === 'Reparto') {
+                    $(v).next().find('a').each(function(k2, v2) {
+                        media.cast.push($(v2).text());
+                    });
                 }
+            });
 
-                // Example: Top chef | Programa 12
-                if (media.episode == null) {
-                    parsedEpisodeTitle = title.match(/Programa (\d+)/);
-
-                    if (parsedEpisodeTitle != null) {
-                        media.episode = parseInt(parsedEpisodeTitle[1]);
-                    }
+            //Directors 
+            $('.movie-info dt').each(function(k, v) {
+                if ($(v).text() === 'Director') {
+                    $(v).next().find('a').each(function(k2, v2) {
+                        media.directors.push($(v2).text());
+                    });
                 }
-
-                if (media.episode == null) {
-                    aux = $('.mar-r_5:nth-child(5)').text().match(/C(\d+)/);
-                    media.episode = aux[1];
-                }
-
-            } else {
-                //TITLE
-                media.title = $('h2[itemprop="name"]').text();
-            }
-
-            //CAST
-            aux = $('.fn_sinopsis_lay .mar-b_5').text();
-
-            if (aux.match(/Reparto:(.*?)((Director)|(Género)|$|\n)/)) {
-                aux = aux.match(/Reparto:(.*?)((Director)|(Género)|$|\n)/);
-                if (aux !== null) {
-                    aux = aux[1].trim();
-
-                    if (aux.indexOf(',') !== -1) {
-                        aux = aux.split(',');
-                        for (i = 0; i < aux.length; i++) {
-                            media.cast.push(aux[i].trim());
-                        }
-                    }
-
-                    if (aux.indexOf(' y ') !== -1) {
-                        aux = aux.split(' y ');
-                        for (i = 0; i < aux.length; i++) {
-                            media.cast.push(aux[i].trim());
-                        }
-                    }
-                }
-            }
-
-            //DIRECTOR
-            aux = $('.fn_sinopsis_lay .mar-b_5').text();
-
-            if (aux.match(/Reparto:(.*?)((Director)|(Género)|$|\n)/)) {
-                aux = aux.match(/Director:(.*?)((Reparto)|(Género)|$|\n)/);
-                if (aux !== null) {
-                    aux = aux[1].trim();
-
-                    if (aux.indexOf(',') !== -1) {
-                        aux = aux.split(',');
-                        for (i = 0; i < aux.length; i++) {
-                            media.directors.push(aux[i].trim());
-                        }
-                    }
-
-                    if (aux.indexOf(' y ') !== -1) {
-                        aux = aux.split(' y ');
-                        for (i = 0; i < aux.length; i++) {
-                            media.directors.push(aux[i].trim());
-                        }
-                    }
-                }
-            }
-            
+            });
         }
-        console.log(media);
+
         return media;
     };
 
     var checkSelectors = function() {
-
         return {
-            '#overview-bottom .wlb_classic_wrapper .btn2_text:first': 'pending',
+            //Movie
+            '.rating-select': {
+                on: 'change',
+                value: 'watched',
+                manipulateData: function(data, $selector) {
+                    var value = $selector.val();
 
-            '.mod_player .play': 'watched'
+                    if (value == '-1') {
+                        data.sendStatus.value = 'no_status';
+                    }
+
+                    return data;
+                }
+            },
         };
     };
 
     return {
-        name: 'atresplayer',
-        url: 'www\.atresplayer\.com\/',
+        name: 'filmaffinity',
+        url: 'filmaffinity\.com\/es\/',
 
         getMediaInfo: getMediaInfo,
         getMediaType: getMediaType,
