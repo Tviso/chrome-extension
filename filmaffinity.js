@@ -1,5 +1,3 @@
-/* global $ */
-/* global document */
 module.exports = function() {
 
     var getMediaType = function() {
@@ -63,8 +61,23 @@ module.exports = function() {
         return media;
     };
 
-    var checkSelectors = {
+    var checkSelectors = function() {
+        return {
+            //Movie
+            '.rating-select': {
+                on: 'change',
+                value: 'watched',
+                manipulateData: function(data, $selector) {
+                    var value = $selector.val();
 
+                    if (value == '-1') {
+                        data.sendStatus.value = 'no_status';
+                    }
+
+                    return data;
+                }
+            },
+        };
     };
 
     return {
