@@ -11,4 +11,8 @@ module.exports = {
 	'filmin' : require('./filmin'),
 	'seriesflv' : require('./seriesflv'),
 	'pordede' : require('./pordede'),
+	'seriespepito' : require('./seriespepito'),
+	'seriesyonkis' : require('./seriesyonkis'),
+	'hdfull' : require('./hdfull'),
+	'seriesmu' : require('./seriesmu'),
 };
