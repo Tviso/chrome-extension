@@ -9,10 +9,10 @@ To add a new website into the extension, you have to create a new JavaScript fil
 **Features**
 
 * Tviso Chrome Extension injects jQuery to any compatible site, so you can use any selector or function
-* If you want the raw code of the extension in order to test your addon, please contact us at [info@tviso.com](mailto://info@tviso.com). Otherise, you can create a pull request and we'll test and add it for you.
+* If you want the raw code of the extension in order to test your addon, please contact us at [info@tviso.com](mailto://info@tviso.com). Otherwise, you can create a pull request and we'll test and add it for you.
 
 
-<pre><code>
+````javascript
 module.exports = function() {
 
     /**
@@ -187,4 +187,4 @@ module.exports = function() {
         checkSelectors: checkSelectors
     };
 };
-</code></pre>
+```
