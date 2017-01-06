@@ -18,4 +18,5 @@ module.exports = {
 	'mejortorrent' : require('./mejortorrent'),
 	'seriesdanko' : require('./seriesdanko'),
 	'mejorenvo' : require('./mejorenvo'),
+	'playmax' : require('./playmax')
 };
