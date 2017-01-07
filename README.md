@@ -33,8 +33,8 @@ module.exports = function() {
      *      title: {string mandatory} If mediaType is EPISODE, you should return the title of the serie
      *      imdb: {string optional} imdb id if exists (example "tt2389182")
      *      year: {int optional}
-     *      cast: {string optional} a list of comma separed actors (example: "Scarlett Johansson,Morgan Freeman")
-     *      director: {string optional} a list of comma separed directors
+     *      cast: {string optional} a list of comma separated actors (example: "Scarlett Johansson,Morgan Freeman")
+     *      director: {string optional} a list of comma separated directors
      *
      *      season: {int mandatory for EPISODE}: episode's season number
      *      episode: {int mandatory for EPISODE}: episode number
